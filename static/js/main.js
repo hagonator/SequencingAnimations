@@ -3,6 +3,11 @@ const aliceTumbling = [
   { transform: 'rotate(360deg) scale(0)' }
 ];
 
+const aliceRetumbling = [
+  { transform: 'rotate(360deg) scale(0)' },
+  { transform: 'rotate(0) scale(1)' }
+];
+
 const aliceTiming = {
   duration: 2000,
   iterations: 1,
@@ -20,6 +25,26 @@ alice3.priority = Math.random();
 let aliceList = [alice1, alice2, alice3];
 aliceList.sort((a, b) => (b.priority - a.priority));
 
-aliceList[0].animate(aliceTumbling, aliceTiming).finished
-  .then((response) => aliceList[1].animate(aliceTumbling, aliceTiming).finished)
-  .then((response) => aliceList[2].animate(aliceTumbling, aliceTiming).finished);
+/** callback hell **/
+// aliceList[0].animate(aliceTumbling, aliceTiming).finished.then((response) => {
+  // aliceList[1].animate(aliceTumbling, aliceTiming).finished.then((response) => {
+    // aliceList[2].animate(aliceTumbling, aliceTiming).finished.then((response) => {
+      // aliceList[0].animate(aliceRetumbling, aliceTiming);
+    // });
+  // });
+// });
+
+/** promise chain **/
+// aliceList[0].animate(aliceTumbling, aliceTiming).finished
+  // .then((response) => aliceList[1].animate(aliceTumbling, aliceTiming).finished)
+  // .then((response) => aliceList[2].animate(aliceTumbling, aliceTiming).finished)
+  // .then((response) => aliceList[0].animate(aliceRetumbling, aliceTiming));
+  
+/** async and await **/
+async function doAnimation() {
+  for (let alice of aliceList) {
+    await alice.animate(aliceTumbling, aliceTiming).finished;
+  }
+}
+
+doAnimation().then((response) => aliceList[0].animate(aliceRetumbling, aliceTiming));
